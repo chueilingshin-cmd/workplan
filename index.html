@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>今天待辦事項</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- 登入/註冊畫面 -->
+    <div id="loginScreen" class="login-screen">
+        <div class="login-container">
+            <h1>今天待辦事項</h1>
+            <div class="login-tabs">
+                <button id="loginTab" class="tab-btn active">登入</button>
+                <button id="registerTab" class="tab-btn">註冊</button>
+            </div>
+            <div id="loginForm" class="login-form">
+                <div class="form-group">
+                    <label for="loginUsername">用戶名：</label>
+                    <input type="text" id="loginUsername" class="form-input" placeholder="請輸入用戶名">
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">密碼：</label>
+                    <input type="password" id="loginPassword" class="form-input" placeholder="請輸入密碼">
+                </div>
+                <button id="loginBtn" class="form-btn primary-btn">登入</button>
+                <div id="loginMessage" class="form-message"></div>
+            </div>
+            <div id="registerForm" class="login-form" style="display: none;">
+                <div class="form-group">
+                    <label for="registerUsername">用戶名：</label>
+                    <input type="text" id="registerUsername" class="form-input" placeholder="請輸入用戶名">
+                </div>
+                <div class="form-group">
+                    <label for="registerEmail">電子郵件：</label>
+                    <input type="email" id="registerEmail" class="form-input" placeholder="請輸入電子郵件">
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword">密碼：</label>
+                    <input type="password" id="registerPassword" class="form-input" placeholder="請輸入密碼">
+                </div>
+                <div class="form-group">
+                    <label for="registerPasswordConfirm">確認密碼：</label>
+                    <input type="password" id="registerPasswordConfirm" class="form-input" placeholder="請再次輸入密碼">
+                </div>
+                <button id="registerBtn" class="form-btn primary-btn">註冊</button>
+                <div id="registerMessage" class="form-message"></div>
+            </div>
+            <div class="forgot-password-link">
+                <a href="#" id="forgotPasswordLink">忘記密碼？</a>
+            </div>
+            <div id="forgotPasswordForm" class="login-form" style="display: none;">
+                <h3>忘記密碼</h3>
+                <div class="form-group">
+                    <label for="forgotEmail">電子郵件：</label>
+                    <input type="email" id="forgotEmail" class="form-input" placeholder="請輸入註冊時的電子郵件">
+                </div>
+                <button id="forgotPasswordBtn" class="form-btn primary-btn">發送密碼重設通知</button>
+                <button id="backToLoginBtn" class="form-btn secondary-btn">返回登入</button>
+                <div id="forgotPasswordMessage" class="form-message"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 主應用程式（登入後顯示） -->
+    <div id="mainApp" class="main-container" style="display: none;">
+        <!-- 用戶資訊列 -->
+        <div class="user-bar">
+            <span class="user-info">歡迎，<strong id="currentUserName"></strong></span>
+            <button id="logoutBtn" class="logout-btn">登出</button>
+        </div>
+        <!-- 左側月曆 -->
+        <div class="left-panel" id="leftPanel">
+            <div class="calendar-section" id="calendarSection">
+                <div class="calendar-container">
+                    <div class="calendar-header">
+                        <button id="prevMonth" class="calendar-nav">‹</button>
+                        <h2 id="calendarTitle"></h2>
+                        <button id="nextMonth" class="calendar-nav">›</button>
+                    </div>
+                    <div class="calendar-weekdays">
+                        <div>日</div>
+                        <div>一</div>
+                        <div>二</div>
+                        <div>三</div>
+                        <div>四</div>
+                        <div>五</div>
+                        <div>六</div>
+                    </div>
+                    <div id="calendarDays" class="calendar-days"></div>
+                </div>
+            </div>
+            <div class="vertical-resizer" id="leftVerticalResizer"></div>
+            <div class="statistics-section" id="statisticsSection">
+                <div class="statistics-left" id="statisticsLeft">
+                    <h3>今天待辦事項統計</h3>
+                    <div class="stat-item">
+                        <span class="stat-label">共有：</span>
+                        <span id="totalCount" class="stat-value">0</span>
+                        <span class="stat-unit">項</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">已完成：</span>
+                        <span id="completedCount" class="stat-value">0</span>
+                        <span class="stat-unit">項</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">還剩下：</span>
+                        <span id="remainingCount" class="stat-value">0</span>
+                        <span class="stat-unit">項</span>
+                    </div>
+                </div>
+                <div class="statistics-resizer" id="statisticsResizer"></div>
+                <div class="statistics-right" id="statisticsRight">
+                    <h3>時間統計</h3>
+                    <div class="stat-item">
+                        <span class="stat-label">工作時間：</span>
+                        <span id="workTime" class="stat-value">0</span>
+                        <span class="stat-unit">小時</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">休息時間：</span>
+                        <span id="restTime" class="stat-value">0</span>
+                        <span class="stat-unit">小時</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="resizer" id="resizer1"></div>
+
+        <!-- 中間待辦事項 -->
+        <div class="middle-panel" id="middlePanel">
+            <h1 class="title" id="todoTitle">今天待辦事項</h1>
+            
+            <div class="time-schedule-container" id="timeScheduleContainer">
+                <div class="time-schedule" id="timeSchedule">
+                    <!-- 24小時時間軸將在這裡動態生成 -->
+                </div>
+            </div>
+        </div>
+
+        <div class="resizer" id="resizer2"></div>
+
+        <!-- 右側面板 -->
+        <div class="right-panel" id="rightPanel">
+            <!-- 心情與提醒 -->
+            <div class="mood-reminder-container" id="moodReminderContainer">
+                <h3>心情與提醒</h3>
+                <textarea id="moodReminder" class="mood-reminder-input" placeholder="輸入你的工作心情或提醒..."></textarea>
+            </div>
+            <div class="vertical-resizer" id="moodPomodoroResizer"></div>
+            
+            <!-- 番茄鐘 -->
+            <div class="pomodoro-container" id="pomodoroContainer">
+                <h3>番茄鐘</h3>
+                <div class="pomodoro-display">
+                    <div class="pomodoro-settings">
+                        <label for="pomodoroDuration">工作時間（分鐘）：</label>
+                        <input type="number" id="pomodoroDuration" class="pomodoro-input" min="1" max="60" value="50">
+                    </div>
+                    <div class="clock-face">
+                        <div class="clock-center"></div>
+                        <div id="pomodoroMinuteHand" class="hand minute-hand"></div>
+                        <div id="pomodoroHourHand" class="hand hour-hand"></div>
+                        <div class="clock-numbers">
+                            <span style="position: absolute; top: 10px; left: 50%; transform: translateX(-50%);">12</span>
+                            <span style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%);">3</span>
+                            <span style="position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);">6</span>
+                            <span style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%);">9</span>
+                        </div>
+                    </div>
+                    <div id="pomodoroTime" class="pomodoro-time-text">50:00</div>
+                    <div class="pomodoro-buttons">
+                        <button id="pomodoroStart" class="pomodoro-btn">開始</button>
+                        <button id="pomodoroPause" class="pomodoro-btn">暫停</button>
+                        <button id="pomodoroReset" class="pomodoro-btn">重置</button>
+                    </div>
+                    <div id="pomodoroStatus" class="pomodoro-status">準備開始</div>
+                </div>
+            </div>
+            
+            <div class="vertical-resizer" id="rightVerticalResizer"></div>
+
+            <!-- 休息時間 -->
+            <div class="study-clock-container" id="studyClockContainer">
+                <h3>休息時間</h3>
+                <div class="study-clock-display">
+                    <div class="rest-settings">
+                        <label>休息時間設定：</label>
+                        <div class="rest-time-inputs">
+                            <input type="number" id="restHours" class="rest-input-small" min="0" max="4" value="0" placeholder="時">
+                            <span class="rest-separator">小時</span>
+                            <input type="number" id="restMinutes" class="rest-input-small" min="0" max="59" value="30" placeholder="分">
+                            <span class="rest-separator">分鐘</span>
+                        </div>
+                    </div>
+                    <div id="studyTime" class="study-time">00:00:00</div>
+                    <div class="study-clock-buttons">
+                        <button id="studyStart" class="study-btn">開始</button>
+                        <button id="studyStop" class="study-btn">停止</button>
+                        <button id="studyReset" class="study-btn">重置</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 番茄鐘提醒畫面 -->
+    <div id="pomodoroAlert" class="alert-overlay" style="display: none;">
+        <div class="alert-content">
+            <div class="alert-text-large">站起來動一動，該喝水了</div>
+            <div class="alert-animation">
+                <div class="water-icon">💧</div>
+                <div class="exercise-icon">🏃</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 休息時間提醒畫面 -->
+    <div id="restAlert" class="alert-overlay" style="display: none;">
+        <div class="alert-content">
+            <div class="alert-text-large">該回去工作了</div>
+            <div class="alert-animation">
+                <div class="work-icon">💼</div>
+                <div class="work-icon">📚</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 待辦事項編輯對話框 -->
+    <div id="todoModal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <h2 id="modalTitle">新增待辦事項</h2>
+            <div class="modal-form">
+                <div class="modal-input-group">
+                    <label>時間：</label>
+                    <div class="work-time-row">
+                        <input type="time" id="modalStartTime" class="modal-input">
+                        <span class="time-separator">～</span>
+                        <input type="time" id="modalEndTime" class="modal-input">
+                    </div>
+                </div>
+                <div class="modal-input-group">
+                    <label>事項內容：</label>
+                    <textarea id="modalTodoText" class="modal-textarea" placeholder="請輸入待辦事項"></textarea>
+                </div>
+                <div class="modal-buttons">
+                    <button id="modalSave" class="modal-btn save-btn">儲存</button>
+                    <button id="modalCancel" class="modal-btn cancel-btn">取消</button>
+                    <button id="modalDelete" class="modal-btn delete-btn" style="display: none;">刪除</button>
+                    <button id="modalComplete" class="modal-btn complete-btn" style="display: none;">完成</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>

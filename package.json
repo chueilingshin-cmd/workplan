@@ -1,0 +1,16 @@
+{
+  "name": "todo-js",
+  "version": "1.0.0",
+  "description": "A simple todo list application using vanilla JavaScript",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx http-server . -p 8080 -o"
+  },
+  "keywords": [
+    "todo",
+    "javascript",
+    "vanilla"
+  ],
+  "author": "",
+  "license": "MIT"
+}
